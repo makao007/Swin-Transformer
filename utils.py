@@ -113,11 +113,13 @@ def load_pretrained(config, model, logger):
             state_dict['head.weight'] = state_dict['head.weight'][map22kto1k, :]
             state_dict['head.bias'] = state_dict['head.bias'][map22kto1k]
         else:
-            torch.nn.init.constant_(model.head.bias, 0.)
-            torch.nn.init.constant_(model.head.weight, 0.)
-            del state_dict['head.weight']
-            del state_dict['head.bias']
-            logger.warning(f"Error in loading classifier head, re-init classifier head to 0")
+#             torch.nn.init.constant_(model.head.bias, 0.)
+#             torch.nn.init.constant_(model.head.weight, 0.)
+#             del state_dict['head.weight']
+#             del state_dict['head.bias']
+#             logger.warning(f"Error in loading classifier head, re-init classifier head to 0")
+            state_dict['head.weight'] = state_dict['head.weight'][:config.MODEL.NUM_CLASSES, :]
+            state_dict['head.bias'] = state_dict['head.bias'][:config.MODEL.NUM_CLASSES]
 
     msg = model.load_state_dict(state_dict, strict=False)
     logger.warning(msg)
